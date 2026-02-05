@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Tanishka ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- RESET & CORE STYLES --- */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100dvh;
+            width: 100vw;
+            overflow: hidden;
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+        }
+
+        /* --- BACKGROUND SLIDESHOW --- */
+        #slideshow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            opacity: 1; /* Full brightness */
+        }
+        
+        /* Dark overlay for text contrast */
+        #slideshow::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.2); 
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .slide.active { opacity: 1; }
+
+        /* --- START OVERLAY --- */
+        #start-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            cursor: pointer;
+            transition: opacity 0.5s;
+        }
+
+        .start-btn {
+            background: #ff4d8f;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 22px;
+            font-weight: bold;
+            border: none;
+            box-shadow: 0 5px 15px rgba(255, 77, 143, 0.4);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* --- FLOATING HEARTS --- */
+        #bg-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .heart-bg {
+            position: absolute;
+            font-size: 24px;
+            animation: floatUp 8s linear forwards;
+            opacity: 0;
+            text-shadow: 0 0 5px rgba(255,100,150,0.5);
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0.8; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- MAIN CARD (INVISIBLE) --- */
+        .card {
+            background: transparent; 
+            border: none;
+            box-shadow: none;
+            backdrop-filter: none;
+            
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            min-height: 500px;
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .mascot-img {
+            width: 160px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #ff4d8f;
+            margin-bottom: 20px;
+            animation: bounce 2.5s infinite ease-in-out;
+            display: none;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .mascot-emoji {
+            font-size: 90px; 
+            margin-bottom: 20px; 
+            animation: bounce 2.5s infinite ease-in-out;
+            display: block;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+        }
+
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        
+        h1 { 
+            color: #fff;
+            font-size: 32px; 
+            margin: 0 0 40px 0; 
+            line-height: 1.3; 
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5), 0 0 20px rgba(255, 77, 143, 0.5);
+        }
+        .highlight { color: #ff4d8f; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+
+        .btn-box { position: relative; width: 100%; height: 200px; display: flex; justify-content: center; align-items: flex-start; }
+        
+        .btn {
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            padding: 16px 40px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            position: absolute;
+            transition: transform 0.2s, background 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        #yes-btn { 
+            background: linear-gradient(135deg, #ff4d8f 0%, #ff1c68 100%); 
+            color: white; 
+            z-index: 20; 
+            position: relative;
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(255, 77, 143, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 77, 143, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 77, 143, 0); }
+        }
+
+        #no-btn { background: #fff; color: #666; right: 15%; z-index: 100; transition: all 0.15s ease-out; }
+        
+        #msg-box { 
+            min-height: 30px; 
+            margin-top: 20px; 
+            color: #fff; 
+            font-weight: 800; 
+            font-size: 22px; 
+            font-style: italic;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.7);
+        }
+        
+        #confetti { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+
+        @media (max-width: 600px) {
+            .card { padding: 30px 15px; }
+            h1 { font-size: 26px; }
+            .mascot-emoji { font-size: 70px; }
+            .mascot-img { width: 130px; height: 130px; }
+            .btn { font-size: 18px; padding: 14px 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen" onclick="startGame()">
+        <div class="mascot-emoji">💌</div>
+        <button class="start-btn">Tap to Open</button>
+    </div>
+
+    <div id="slideshow">
+        <div class="slide active" style="background-image: url('pic1.jpg');"></div>
+        <div class="slide" style="background-image: url('pic2.jpg');"></div>
+        <div class="slide" style="background-image: url('pic3.jpg');"></div>
+        <div class="slide" style="background-image: url('pic4.jpg');"></div>
+    </div>
+
+    <div id="bg-layer"></div>
+
+    <div class="card" id="main-card">
+        <div class="mascot-emoji" id="mascot-emoji">🐻‍❄️💕</div>
+        <img src="celebration.jpg" class="mascot-img" id="mascot-img" alt="Us">
+
+        <h1 id="heading"><span class="highlight">Tanishka,</span><br>will you be my valentine?</h1>
+        
+        <div class="btn-box" id="btn-box">
+            <button class="btn" id="yes-btn">Yes ✨</button>
+            <button class="btn" id="no-btn">No 🏠</button>
+        </div>
+
+        <div id="msg-box"></div>
+    </div>
+
+    <canvas id="confetti"></canvas>
+
+    <audio id="sound-dodge" src="dodge.mp3" preload="auto"></audio>
+    <audio id="sound-success" src="success.mp3" preload="auto"></audio>
+    <audio id="bg-music" src="song.mp3" loop preload="auto"></audio>
+
+    <script>
+        // --- SLIDESHOW LOGIC ---
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        setInterval(() => {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }, 4000);
+
+        // --- ELEMENTS ---
+        const startScreen = document.getElementById('start-screen');
+        const mainCard = document.getElementById('main-card');
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+        const msgBox = document.getElementById('msg-box');
+        const mascotEmoji = document.getElementById('mascot-emoji');
+        const mascotImg = document.getElementById('mascot-img');
+        const heading = document.getElementById('heading');
+        const btnBox = document.getElementById('btn-box');
+        
+        const dodgeSound = document.getElementById('sound-dodge');
+        const successSound = document.getElementById('sound-success');
+        const bgMusic = document.getElementById('bg-music');
+
+        function startGame() {
+            // --- AUDIO SETTINGS ---
+            bgMusic.volume = 0.1;       // 10% Volume
+            bgMusic.playbackRate = 1.0; // Normal Speed
+            
+            successSound.volume = 0.5;  // 50% Volume
+            dodgeSound.volume = 0.45;   // 45% Volume
+
+            bgMusic.play().catch(e => console.log("Audio failed:", e));
+            dodgeSound.play().then(() => { dodgeSound.pause(); dodgeSound.currentTime=0; });
+            successSound.play().then(() => { successSound.pause(); successSound.currentTime=0; });
+
+            startScreen.style.opacity = '0';
+            setTimeout(() => {
+                startScreen.style.display = 'none';
+                mainCard.style.display = 'flex';
+                mainCard.style.animation = 'fadeInUp 0.6s forwards';
+            }, 500);
+        }
+
+        const messages = [
+            "\"No\" seems a bit shy",
+            "Just say Yes already!",
+            "Are you sure about that?",
+            "The No button is running away!",
+            "You know you want to say Yes 💕",
+            "Come on, give it a try!",
+            "No is not an option here 😊"
+        ];
+        let dodgeCount = 0;
+
+        function handleNo(e) {
+            if (e && e.type === 'touchstart') e.preventDefault();
+            
+            dodgeSound.currentTime = 0;
+            dodgeSound.play().catch(() => {});
+
+            const boxRect = btnBox.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+            const maxLeft = boxRect.width - btnRect.width;
+            const maxTop = boxRect.height - btnRect.height;
+            const randomLeft = Math.max(0, Math.floor(Math.random() * maxLeft));
+            const randomTop = Math.max(0, Math.floor(Math.random() * maxTop));
+
+            noBtn.style.position = 'absolute';
+            noBtn.style.right = 'auto';
+            noBtn.style.left = randomLeft + 'px';
+            noBtn.style.top = randomTop + 'px';
+
+            msgBox.innerText = messages[dodgeCount % messages.length];
+            dodgeCount++;
+            
+            const yesScale = Math.min(1 + (dodgeCount * 0.08), 1.35); 
+            const noScale = Math.max(1 - (dodgeCount * 0.1), 0.5);
+            yesBtn.style.transform = `scale(${yesScale})`;
+            noBtn.style.transform = `scale(${noScale})`;
+        }
+
+        yesBtn.addEventListener('click', () => {
+            // --- SUCCESS SOUND LOOP LOGIC ---
+            successSound.loop = true; // Enable loop
+            successSound.play().catch(() => {});
+            
+            // Stop looping after 3 seconds
+            setTimeout(() => {
+                successSound.pause();
+                successSound.currentTime = 0;
+                successSound.loop = false;
+            }, 3000);
+
+            // Visual Updates
+            mascotEmoji.style.display = 'none';
+            mascotImg.style.display = 'block';
+            mascotImg.style.animation = 'popScale 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            heading.innerHTML = "Yay! I knew you'd say yes! 💖";
+            btnBox.style.display = 'none';
+            msgBox.style.display = 'none';
+            startConfetti();
+        });
+
+        noBtn.addEventListener('mouseover', handleNo);
+        noBtn.addEventListener('touchstart', handleNo);
+
+        setInterval(() => {
+            const heart = document.createElement('div');
+            heart.classList.add('heart-bg');
+            heart.innerHTML = ['💕', '💖', '💗', '💓', '💝'][Math.floor(Math.random()*5)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            document.getElementById('bg-layer').appendChild(heart);
+            setTimeout(() => heart.remove(), 8000);
+        }, 1000);
+
+        function startConfetti() {
+            const canvas = document.getElementById('confetti');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const particles = [];
+            const colors = ['#ff6b9d', '#ff9ec7', '#ffb3d9', '#ffd700', '#ff69b4'];
+            for(let i=0; i<150; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    color: colors[Math.floor(Math.random()*colors.length)],
+                    size: Math.random() * 8 + 4,
+                    speedY: Math.random() * 3 + 2,
+                    speedX: (Math.random() - 0.5) * 2,
+                    rotation: 0
+                });
+            }
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.y += p.speedY; p.x += p.speedX; p.rotation += 10;
+                    if (p.y > canvas.height) { p.y = -20; p.x = Math.random() * canvas.width; }
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotation * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+                    ctx.restore();
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
